@@ -1,6 +1,7 @@
 // App.jsx
 
 import m from 'mithril';
+import O from 'patchinko/constant'
 
 import NavBar from './NavBar.jsx';
 
@@ -33,17 +34,20 @@ const createWelcomeView = (navigator, update, auth) => {
   };
 };
 
+const requiresAuth = auth => ({
+  navigating: (params, navigate) => {
+    if (!auth.isAuthenticated()) {
+      navigator.navigateTo("WelcomeView");
+    }
+    else {
+      navigate();
+    }
+  }
+});
+
 const createConferenceView = (navigator, update, auth) => {
   const ConferenceCard = createConferenceCard(update);
-  return {
-    navigating: (params, navigate) => {
-      if (!auth.isAuthenticated()) {
-        navigator.navigateTo("WelcomeView");
-      }
-      else {
-        navigate();
-      }
-    },
+  return O({
     view: ({attrs:{model}}) => [
 	    <StageBanner action={() => auth.logout()} title="Conferences" />,
 	    <CardContainer>
@@ -53,20 +57,12 @@ const createConferenceView = (navigator, update, auth) => {
 		    }
 	    </CardContainer>
     ]
-  };
+  }, requiresAuth(auth));
 };
 
 const createCFPView = (navigator, update, auth) => {
   const CFPCard = createCFPCard(update);
-  return {
-    navigating: (params, navigate) => {
-      if (!auth.isAuthenticated()) {
-        navigator.navigateTo("WelcomeView");
-      }
-      else {
-        navigate();
-      }
-    },
+  return O({
     view: ({attrs:{model}}) => [
 	    <StageBanner action={() => auth.logout()} title="Call for Papers" />,
 	    <CardContainer>
@@ -77,27 +73,19 @@ const createCFPView = (navigator, update, auth) => {
 		    }
 	    </CardContainer>
     ]
-  };
+  }, requiresAuth(auth));
 };
 
 const createFormView = (navigator, update, auth) => {
   const EntryForm = createEntryForm(navigator, update);
-  return {
-    navigating: (params, navigate) => {
-      if (!auth.isAuthenticated()) {
-        navigator.navigateTo("WelcomeView");
-      }
-      else {
-        navigate();
-      }
-    },
+  return O({
     view: ({attrs:{model}}) => [
 	    <StageBanner action={() => auth.logout()} title="Add Conference" />,
 	    <CardContainer>
 		    <EntryForm model={model} />
 	    </CardContainer>
     ]
-  };
+  }, requiresAuth(auth));
 };
 
 const createApp = update => {
