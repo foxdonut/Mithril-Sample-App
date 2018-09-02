@@ -1,14 +1,14 @@
 // App.jsx
 
-const m = require('mithril');
+import m from 'mithril';
 
 import NavBar from './NavBar.jsx';
 
 // Components
 import StageBanner from '../../components/ui/StageBanner.jsx';
 import CardContainer from '../../components/layout/CardContainer.jsx';
-import ConferenceCard from '../../components/cards/ConferenceCard.jsx';
-import CFPCard from '../../components/cards/CFPCard.jsx';
+import createConferenceCard from '../../components/cards/ConferenceCard.jsx';
+import createCFPCard from '../../components/cards/CFPCard.jsx';
 import createEntryForm from '../../components/EntryForm.jsx';
 
 // Mock data
@@ -17,13 +17,14 @@ import { CONFERENCES } from '../../store/data';
 import { createNavigator } from "../../services/navigator"
 
 const createConferenceView = (navigator, update) => {
+  const ConferenceCard = createConferenceCard(update);
   return {
     view: ({attrs:{model}}) => [
 	    <StageBanner action={() => console.log(`Logging out!`)} title="Conferences" />,
 	    <CardContainer>
 		    {
 			    model.conferences
-				    .map(conference => <ConferenceCard conference={conference} />)
+				    .map((conference, idx) => <ConferenceCard conference={conference} idx={idx} />)
 		    }
 	    </CardContainer>
     ]
@@ -31,14 +32,15 @@ const createConferenceView = (navigator, update) => {
 };
 
 const createCFPView = (navigator, update) => {
+  const CFPCard = createCFPCard(update);
   return {
     view: ({attrs:{model}}) => [
 	    <StageBanner action={() => console.log(`Logging out!`)} title="Call for Papers" />,
 	    <CardContainer>
 		    {
 			    model.conferences
-				    .filter(conference => conference.CFP)
-				    .map(conferenceWithCFP => <CFPCard cfp={true} conference={conferenceWithCFP} />)
+				    .map((conference, idx) => conference.CFP && <CFPCard cfp={true} conference={conference} idx={idx} />)
+            .filter(x => x)
 		    }
 	    </CardContainer>
     ]

@@ -1,24 +1,33 @@
 // ConferenceCard.jsx
 
-const m = require("mithril");
+import m from "mithril";
+import O from "patchinko/constant";
 
 import ConferenceField from './ConferenceField.jsx';
 import CountDownField from "./CountDownField.jsx";
 
-const ConferenceCard = {
-	view: ({ attrs }) =>
-		<div class="conference-card">
-			<div class="conference-fields">
-				<ConferenceField fieldValue={`${attrs.conference.name} @ ${attrs.conference.location}`} />
-				<ConferenceField fieldValue={
-					<i class="fas fa-star" />
-				} />
-			</div>
-			<div class="conference-fields">
-				<ConferenceField fieldValue={attrs.conference.date} />
-				<CountDownField fieldValue={attrs.conference.date} />
-			</div>
-		</div>
+const createConferenceCard = update => {
+  const toggleFavorite = idx => evt => update({
+    conferences: O({ [idx]: O({ favorite: O(x => !x) }) })
+  });
+  return {
+    view: ({ attrs: { conference, idx } }) => {
+      const fav = <span onclick={toggleFavorite(idx)}>
+        <i class={(conference.favorite ? 'icon-star' : 'icon-plus')} />
+      </span>
+
+      return <div class="conference-card">
+        <div class="conference-fields">
+          <ConferenceField fieldValue={`${conference.name} @ ${conference.location}`} />
+          <ConferenceField fieldValue={fav} />
+        </div>
+        <div class="conference-fields">
+          <ConferenceField fieldValue={conference.date} />
+          <CountDownField fieldValue={conference.date} />
+        </div>
+      </div>
+    }
+  };
 };
 
-export default ConferenceCard;
+export default createConferenceCard;
