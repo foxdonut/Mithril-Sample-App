@@ -3,17 +3,12 @@
 import {setMockData} from "../store/data";
 
 import m from 'mithril';
+import O from "patchinko/constant"
 import UIButton from './ui/UIButton.jsx';
 
 const createEntryForm = (navigator, update) => {
-  const setText = field => evt => update(model => {
-    model.entryForm[field] = evt.target.value;
-    return model;
-  });
-  const setCFP = value => evt => update(model => {
-    model.entryForm.CFP = value;
-    return model;
-  });
+  const setText = field => evt => update({ entryForm: O({[field]: evt.target.value}) });
+  const setCFP = value => evt => update({ entryForm: O({CFP: value}) });
   const entryFormHandler = newEntry => {
     console.log(newEntry);
 
@@ -22,11 +17,7 @@ const createEntryForm = (navigator, update) => {
 
     setMockData(newEntry);
 
-    update(model => {
-      model.entryForm = {};
-      return model;
-    });
-
+    update({ entryForm: {} });
     navigator.navigateTo("ConferenceView");
   };
 

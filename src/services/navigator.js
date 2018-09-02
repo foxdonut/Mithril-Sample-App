@@ -1,8 +1,6 @@
 import m from "mithril"
+import O from "patchinko/constant"
 import { compile } from "path-to-regexp"
-
-const compose = (f, g) => x => f(g(x));
-const I = x => x;
 
 export const createNavigator = update => {
   // Map of page id -> component
@@ -42,19 +40,18 @@ export const createNavigator = update => {
     getComponent: pageId => componentMap[pageId] || notFoundComponent,
     onnavigate: (pageId, params, url) => {
       const Component = componentMap[pageId];
-      const updateFunc = model =>
-        Object.assign(model, { pageId, url: "#!" + url });
+      const updateObj = { pageId, url: "#!" + url };
 
       if (Component && Component.navigating) {
         return new Promise(resolve => {
-          Component.navigating(params, func => {
-            update(compose(func || I, updateFunc));
+          Component.navigating(params, obj => {
+            update(O(updateObj, obj || {}));
             resolve();
           });
         });
       }
       else {
-        update(updateFunc);
+        update(updateObj);
       }
     },
     navigateTo: (pageId, params) => {

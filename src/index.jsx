@@ -2,6 +2,7 @@
 
 import m from "mithril";
 import stream from "mithril-stream";
+import O from "patchinko/constant"
 import createApp from './components/layout/App.jsx';
 
 // Styles
@@ -10,7 +11,7 @@ import "./index.css";
 // Meiosis Pattern Setup
 const update = stream();
 const App = createApp(update);
-const models = stream.scan((x, f) => f(x), App.model(), update);
+const models = stream.scan(O, App.model(), update);
 
 const root = document.getElementById("app");
 m.route(root, "/auth", Object.keys(App.navigator.routes).reduce((result, route) => {
