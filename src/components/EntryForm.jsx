@@ -5,7 +5,7 @@ import {setMockData} from "../store/data";
 import m from 'mithril';
 import UIButton from './ui/UIButton.jsx';
 
-const createEntryForm = update => {
+const createEntryForm = (navigator, update) => {
   const setText = field => evt => update(model => {
     model.entryForm[field] = evt.target.value;
     return model;
@@ -25,7 +25,9 @@ const createEntryForm = update => {
     update(model => {
       model.entryForm = {};
       return model;
-    })
+    });
+
+    navigator.navigateTo("ConferenceView");
   };
 
   return {

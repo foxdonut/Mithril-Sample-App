@@ -65,7 +65,7 @@ const createCFPView = (navigator, update) => {
 };
 
 const createFormView = (navigator, update) => {
-  const EntryForm = createEntryForm(update);
+  const EntryForm = createEntryForm(navigator, update);
   return {
     view: ({attrs:{model}}) => [
 	    <StageBanner action={() => auth.logout()} title="Add Conference" />,
