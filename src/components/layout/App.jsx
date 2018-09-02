@@ -18,11 +18,10 @@ const CONFERENCES = getMockData();
 
 // Services
 import Auth from '../../services/auth.js';
-const auth = new Auth();
 
 import { createNavigator } from "../../services/navigator"
 
-const createWelcomeView = (navigator, update) => {
+const createWelcomeView = (navigator, update, auth) => {
   return {
     view: () => [
 	    <h1 class="app-title">Conference Tracker</h1>,
@@ -35,8 +34,16 @@ const createWelcomeView = (navigator, update) => {
   };
 };
 
-const createConferenceView = (navigator, update) => {
+const createConferenceView = (navigator, update, auth) => {
   return {
+    navigating: (params, navigate) => {
+      if (!auth.isAuthenticated()) {
+        navigator.navigateTo("WelcomeView");
+      }
+      else {
+        navigate();
+      }
+    },
     view: ({attrs:{model}}) => [
 	    <StageBanner action={() => auth.logout()} title="Conferences" />,
 	    <CardContainer>
@@ -49,8 +56,16 @@ const createConferenceView = (navigator, update) => {
   };
 };
 
-const createCFPView = (navigator, update) => {
+const createCFPView = (navigator, update, auth) => {
   return {
+    navigating: (params, navigate) => {
+      if (!auth.isAuthenticated()) {
+        navigator.navigateTo("WelcomeView");
+      }
+      else {
+        navigate();
+      }
+    },
     view: ({attrs:{model}}) => [
 	    <StageBanner action={() => auth.logout()} title="Call for Papers" />,
 	    <CardContainer>
@@ -64,9 +79,17 @@ const createCFPView = (navigator, update) => {
   };
 };
 
-const createFormView = (navigator, update) => {
+const createFormView = (navigator, update, auth) => {
   const EntryForm = createEntryForm(navigator, update);
   return {
+    navigating: (params, navigate) => {
+      if (!auth.isAuthenticated()) {
+        navigator.navigateTo("WelcomeView");
+      }
+      else {
+        navigate();
+      }
+    },
     view: ({attrs:{model}}) => [
 	    <StageBanner action={() => auth.logout()} title="Add Conference" />,
 	    <CardContainer>
@@ -77,19 +100,21 @@ const createFormView = (navigator, update) => {
 };
 
 const createApp = update => {
-  const navigator = createNavigator(update);
+  const auth = new Auth();
+  auth.handleAuthentication();
 
+  const navigator = createNavigator(update);
   navigator.register([
-    { key: "WelcomeView", component: createWelcomeView(navigator, update),
+    { key: "WelcomeView", component: createWelcomeView(navigator, update, auth),
       route: "/auth" },
 
-    { key: "ConferenceView", component: createConferenceView(navigator, update),
+    { key: "ConferenceView", component: createConferenceView(navigator, update, auth),
       route: "/conferences" },
 
-    { key: "CFPView", component: createCFPView(navigator, update),
+    { key: "CFPView", component: createCFPView(navigator, update, auth),
       route: "/cfp" },
 
-    { key: "FormView", component: createFormView(navigator, update),
+    { key: "FormView", component: createFormView(navigator, update, auth),
       route: "/entry" }
   ]);
 
@@ -112,44 +137,6 @@ const createApp = update => {
       );
     }
   };
-
-  /*
-	oncreate: (vnode) => {
-		const mainStage = vnode.dom.querySelector(".main-stage");
-
-		auth.handleAuthentication();
-
-		m.route(mainStage, "/auth", {
-			"/auth": {
-				view: () => WelcomeView()
-			},
-			"/conferences": {
-				onmatch: () =>
-					auth.isAuthenticated() ?
-						({view: () => ConferenceView(CONFERENCES)}) :
-						m.route.set("/auth")
-
-			},
-			"/cfp": {
-				onmatch: () =>
-					auth.isAuthenticated() ?
-						({view: () => CFPView(CONFERENCES)}) :
-						m.route.set("/auth")
-			},
-			"/entry": {
-				onmatch: () =>
-					auth.isAuthenticated() ?
-						({view: () => FormView()}) :
-						m.route.set("/auth")
-			}
-		});
-	},
-	view: () =>
-		<div class="App">
-		  <div class="main-stage"></div>
-			<NavBar />
-		</div>
-   */
 };
 
 export default createApp;

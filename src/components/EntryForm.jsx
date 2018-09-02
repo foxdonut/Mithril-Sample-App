@@ -52,7 +52,7 @@ const createEntryForm = (navigator, update) => {
           model.entryForm.CFP ?
             [
               <label for="cfp">Call for Papers Deadline</label>,
-              <input id="cfp" type="text" value={model.entryForm.CFPDate} />
+              <input id="cfp" type="text" value={model.entryForm.CFPDate} oninput={setText("CFPDate")} />
             ] :
             null
         }

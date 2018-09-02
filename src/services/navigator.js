@@ -2,6 +2,7 @@ import m from "mithril"
 import { compile } from "path-to-regexp"
 
 const compose = (f, g) => x => f(g(x));
+const I = x => x;
 
 export const createNavigator = update => {
   // Map of page id -> component
@@ -47,7 +48,7 @@ export const createNavigator = update => {
       if (Component && Component.navigating) {
         return new Promise(resolve => {
           Component.navigating(params, func => {
-            update(compose(func, updateFunc));
+            update(compose(func || I, updateFunc));
             resolve();
           });
         });
