@@ -10,41 +10,16 @@ import CardContainer from '../../components/layout/CardContainer.jsx';
 import ConferenceCard from '../../components/cards/ConferenceCard.jsx';
 import CFPCard from '../../components/cards/CFPCard.jsx';
 import createEntryForm from '../../components/EntryForm.jsx';
-import UIButton from '../../components/ui/UIButton.jsx';
 
 // Mock data
 import { CONFERENCES } from '../../store/data';
 
-// Services
-import Auth from '../../services/auth.js';
-
 import { createNavigator } from "../../services/navigator"
 
-const createWelcomeView = (navigator, update, auth) => {
+const createConferenceView = (navigator, update) => {
   return {
-    view: () => [
-	    <h1 class="app-title">Conference Tracker</h1>,
-	    <h2 class="app-greeting">Welcome</h2>,
-	    <span class="app-description">Track conferences and CFP dates.</span>,
-	    <div class="login-button">
-		    <UIButton action={() => auth.login()} buttonName="LOGIN" />
-	    </div>
-    ]
-  };
-};
-
-const createConferenceView = (navigator, update, auth) => {
-  return {
-    navigating: (params, navigate) => {
-      if (!auth.isAuthenticated()) {
-        navigator.navigateTo("WelcomeView");
-      }
-      else {
-        navigate();
-      }
-    },
     view: ({attrs:{model}}) => [
-	    <StageBanner action={() => auth.logout()} title="Conferences" />,
+	    <StageBanner action={() => console.log(`Logging out!`)} title="Conferences" />,
 	    <CardContainer>
 		    {
 			    model.conferences
@@ -55,18 +30,10 @@ const createConferenceView = (navigator, update, auth) => {
   };
 };
 
-const createCFPView = (navigator, update, auth) => {
+const createCFPView = (navigator, update) => {
   return {
-    navigating: (params, navigate) => {
-      if (!auth.isAuthenticated()) {
-        navigator.navigateTo("WelcomeView");
-      }
-      else {
-        navigate();
-      }
-    },
     view: ({attrs:{model}}) => [
-	    <StageBanner action={() => auth.logout()} title="Call for Papers" />,
+	    <StageBanner action={() => console.log(`Logging out!`)} title="Call for Papers" />,
 	    <CardContainer>
 		    {
 			    model.conferences
@@ -78,19 +45,11 @@ const createCFPView = (navigator, update, auth) => {
   };
 };
 
-const createFormView = (navigator, update, auth) => {
+const createFormView = (navigator, update) => {
   const EntryForm = createEntryForm(navigator, update);
   return {
-    navigating: (params, navigate) => {
-      if (!auth.isAuthenticated()) {
-        navigator.navigateTo("WelcomeView");
-      }
-      else {
-        navigate();
-      }
-    },
     view: ({attrs:{model}}) => [
-	    <StageBanner action={() => auth.logout()} title="Add Conference" />,
+	    <StageBanner action={() => console.log(`Logging out!`)} title="Add Conference" />,
 	    <CardContainer>
 		    <EntryForm model={model} />
 	    </CardContainer>
@@ -99,21 +58,15 @@ const createFormView = (navigator, update, auth) => {
 };
 
 const createApp = update => {
-  const auth = new Auth();
-  auth.handleAuthentication();
-
   const navigator = createNavigator(update);
   navigator.register([
-    { key: "WelcomeView", component: createWelcomeView(navigator, update, auth),
-      route: "/auth" },
-
-    { key: "ConferenceView", component: createConferenceView(navigator, update, auth),
+    { key: "ConferenceView", component: createConferenceView(navigator, update),
       route: "/conferences" },
 
-    { key: "CFPView", component: createCFPView(navigator, update, auth),
+    { key: "CFPView", component: createCFPView(navigator, update),
       route: "/cfp" },
 
-    { key: "FormView", component: createFormView(navigator, update, auth),
+    { key: "FormView", component: createFormView(navigator, update),
       route: "/entry" }
   ]);
 

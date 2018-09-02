@@ -14,7 +14,7 @@ const App = createApp(update);
 const models = stream.scan(O, App.model(), update);
 
 const root = document.getElementById("app");
-m.route(root, "/auth", Object.keys(App.navigator.routes).reduce((result, route) => {
+m.route(root, "/conferences", Object.keys(App.navigator.routes).reduce((result, route) => {
   result[route] = {
     onmatch: (params, url) =>
       App.navigator.onnavigate(App.navigator.routes[route], params, url),
