@@ -1,14 +1,14 @@
 // App.jsx
 
-const m = require('mithril');
+import m from 'mithril';
 
 import NavBar from './NavBar.jsx';
 
 // Components
 import StageBanner from '../../components/ui/StageBanner.jsx';
 import CardContainer from '../../components/layout/CardContainer.jsx';
-import ConferenceCard from '../../components/cards/ConferenceCard.jsx';
-import CFPCard from '../../components/cards/CFPCard.jsx';
+import createConferenceCard from '../../components/cards/ConferenceCard.jsx';
+import createCFPCard from '../../components/cards/CFPCard.jsx';
 import createEntryForm from '../../components/EntryForm.jsx';
 import UIButton from '../../components/ui/UIButton.jsx';
 
@@ -34,6 +34,7 @@ const createWelcomeView = (navigator, update, auth) => {
 };
 
 const createConferenceView = (navigator, update, auth) => {
+  const ConferenceCard = createConferenceCard(update);
   return {
     navigating: (params, navigate) => {
       if (!auth.isAuthenticated()) {
@@ -48,7 +49,7 @@ const createConferenceView = (navigator, update, auth) => {
 	    <CardContainer>
 		    {
 			    model.conferences
-				    .map(conference => <ConferenceCard conference={conference} />)
+				    .map((conference, idx) => <ConferenceCard conference={conference} idx={idx} />)
 		    }
 	    </CardContainer>
     ]
@@ -56,6 +57,7 @@ const createConferenceView = (navigator, update, auth) => {
 };
 
 const createCFPView = (navigator, update, auth) => {
+  const CFPCard = createCFPCard(update);
   return {
     navigating: (params, navigate) => {
       if (!auth.isAuthenticated()) {
@@ -70,8 +72,8 @@ const createCFPView = (navigator, update, auth) => {
 	    <CardContainer>
 		    {
 			    model.conferences
-				    .filter(conference => conference.CFP)
-				    .map(conferenceWithCFP => <CFPCard cfp={true} conference={conferenceWithCFP} />)
+            .map((conference, idx) => conference.CFP && <CFPCard cfp={true} conference={conference} idx={idx} />)
+            .filter(x => x)
 		    }
 	    </CardContainer>
     ]
