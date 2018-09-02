@@ -1,7 +1,5 @@
 // EntryForm.jsx
 
-import {setMockData} from "../store/data";
-
 import m from 'mithril';
 import O from "patchinko/constant"
 import UIButton from './ui/UIButton.jsx';
@@ -13,9 +11,7 @@ const createEntryForm = (navigator, update) => {
     newEntry["favorite"] = false;
     newEntry["CFPCompleted"] = newEntry.CFP ? false : "null";
 
-    setMockData(newEntry);
-
-    update({ entryForm: {} });
+    update({ conferences: O(conferences => conferences.concat([ newEntry ])), entryForm: {} });
     navigator.navigateTo("ConferenceView");
   };
 

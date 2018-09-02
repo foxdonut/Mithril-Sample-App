@@ -13,8 +13,7 @@ import createEntryForm from '../../components/EntryForm.jsx';
 import UIButton from '../../components/ui/UIButton.jsx';
 
 // Mock data
-import {getMockData} from '../../store/data';
-const CONFERENCES = getMockData();
+import { CONFERENCES } from '../../store/data';
 
 // Services
 import Auth from '../../services/auth.js';

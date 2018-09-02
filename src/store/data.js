@@ -1,14 +1,15 @@
 // data.js
 
-const CONFERENCES = [{
-	name: "auth0 conf",
-	location: "Orlando, FL",
-	date: "06/30/2018",
-	favorite: true,
-	CFP: true,
-	CFPDate: "04/20/2018",
-	CFPCompleted: false
-},
+export const CONFERENCES = [
+  {
+    name: "auth0 conf",
+    location: "Orlando, FL",
+    date: "06/30/2018",
+    favorite: true,
+    CFP: true,
+    CFPDate: "04/20/2018",
+    CFPCompleted: false
+  },
 	{
 		name: "Mithril conf",
 		location: "Boston, MA",
@@ -38,5 +39,3 @@ const CONFERENCES = [{
 	}
 ];
 
-exports.getMockData = () => CONFERENCES;
-exports.setMockData = (conference) => CONFERENCES.push(conference);
