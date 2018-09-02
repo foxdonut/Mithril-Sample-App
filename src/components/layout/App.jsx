@@ -2,7 +2,6 @@
 
 const m = require('mithril');
 
-import MainStage from './MainStage.jsx';
 import NavBar from './NavBar.jsx';
 
 // Components
@@ -10,7 +9,7 @@ import StageBanner from '../../components/ui/StageBanner.jsx';
 import CardContainer from '../../components/layout/CardContainer.jsx';
 import ConferenceCard from '../../components/cards/ConferenceCard.jsx';
 import CFPCard from '../../components/cards/CFPCard.jsx';
-import EntryForm from '../../components/EntryForm.jsx';
+import createEntryForm from '../../components/EntryForm.jsx';
 import UIButton from '../../components/ui/UIButton.jsx';
 
 // Mock data
@@ -21,44 +20,100 @@ const CONFERENCES = getMockData();
 import Auth from '../../services/auth.js';
 const auth = new Auth();
 
-const WelcomeView = () => [
-	<h1 class="app-title">Conference Tracker</h1>,
-	<h2 class="app-greeting">Welcome</h2>,
-	<span class="app-description">Track conferences and CFP dates.</span>,
-	<div class="login-button">
-		<UIButton action={() => auth.login()} buttonName="LOGIN" />
-	</div>
-];
+import { createNavigator } from "../../services/navigator"
 
-const ConferenceView = (conferences) => [
-	<StageBanner action={() => auth.logout()} title="Conferences" />,
-	<CardContainer>
-		{
-			conferences
-				.map((conference) => <ConferenceCard conference={conference} />)
-		}
-	</CardContainer>
-];
+const createWelcomeView = (navigator, update) => {
+  return {
+    view: () => [
+	    <h1 class="app-title">Conference Tracker</h1>,
+	    <h2 class="app-greeting">Welcome</h2>,
+	    <span class="app-description">Track conferences and CFP dates.</span>,
+	    <div class="login-button">
+		    <UIButton action={() => auth.login()} buttonName="LOGIN" />
+	    </div>
+    ]
+  };
+};
 
-const CFPView = (conferences) => [
-	<StageBanner action={() => auth.logout()} title="Call for Papers" />,
-	<CardContainer>
-		{
-			conferences
-				.filter(conference => conference.CFP)
-				.map(conferenceWithCFP => <CFPCard cfp={true} conference={conferenceWithCFP} />)
-		}
-	</CardContainer>
-];
+const createConferenceView = (navigator, update) => {
+  return {
+    view: ({attrs:{model}}) => [
+	    <StageBanner action={() => auth.logout()} title="Conferences" />,
+	    <CardContainer>
+		    {
+			    model.conferences
+				    .map(conference => <ConferenceCard conference={conference} />)
+		    }
+	    </CardContainer>
+    ]
+  };
+};
 
-const FormView = () => [
-	<StageBanner action={() => auth.logout()} title="Add Conference" />,
-	<CardContainer>
-		<EntryForm />
-	</CardContainer>
-];
+const createCFPView = (navigator, update) => {
+  return {
+    view: ({attrs:{model}}) => [
+	    <StageBanner action={() => auth.logout()} title="Call for Papers" />,
+	    <CardContainer>
+		    {
+			    model.conferences
+				    .filter(conference => conference.CFP)
+				    .map(conferenceWithCFP => <CFPCard cfp={true} conference={conferenceWithCFP} />)
+		    }
+	    </CardContainer>
+    ]
+  };
+};
 
-const App = {
+const createFormView = (navigator, update) => {
+  const EntryForm = createEntryForm(update);
+  return {
+    view: ({attrs:{model}}) => [
+	    <StageBanner action={() => auth.logout()} title="Add Conference" />,
+	    <CardContainer>
+		    <EntryForm model={model} />
+	    </CardContainer>
+    ]
+  };
+};
+
+const createApp = update => {
+  const navigator = createNavigator(update);
+
+  navigator.register([
+    { key: "WelcomeView", component: createWelcomeView(navigator, update),
+      route: "/auth" },
+
+    { key: "ConferenceView", component: createConferenceView(navigator, update),
+      route: "/conferences" },
+
+    { key: "CFPView", component: createCFPView(navigator, update),
+      route: "/cfp" },
+
+    { key: "FormView", component: createFormView(navigator, update),
+      route: "/entry" }
+  ]);
+
+  return {
+    model: () => ({
+      conferences: CONFERENCES,
+      entryForm: {
+      }
+    }),
+    navigator,
+    view: ({attrs:{model}}) => {
+      const Component = navigator.getComponent(model.pageId);
+      return (
+        <div class="App">
+          <div class="main-stage">
+            <Component model={model} />
+          </div>
+          <NavBar />
+        </div>
+      );
+    }
+  };
+
+  /*
 	oncreate: (vnode) => {
 		const mainStage = vnode.dom.querySelector(".main-stage");
 
@@ -89,13 +144,12 @@ const App = {
 			}
 		});
 	},
-	view: ({ children }) =>
+	view: () =>
 		<div class="App">
-			<MainStage>
-				{children}
-			</MainStage>
+		  <div class="main-stage"></div>
 			<NavBar />
 		</div>
+   */
 };
 
-export default App;
+export default createApp;

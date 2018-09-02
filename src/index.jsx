@@ -1,11 +1,36 @@
 // index.jsx
 
-const m = require("mithril");
-const root = document.getElementById("app");
+import m from "mithril";
+import stream from "mithril-stream";
+import createApp from './components/layout/App.jsx';
 
 // Styles
 import "./index.css";
 
-import App from './components/layout/App.jsx';
+// Meiosis Pattern Setup
+const update = stream();
+const App = createApp(update);
+const models = stream.scan((x, f) => f(x), App.model(), update);
 
-m.render(root, <App />);
+const root = document.getElementById("app");
+m.route(root, "/auth", Object.keys(App.navigator.routes).reduce((result, route) => {
+  result[route] = {
+    onmatch: (params, url) =>
+      App.navigator.onnavigate(App.navigator.routes[route], params, url),
+    render: () => m(App, { model: models() })
+  };
+  return result;
+}, {}));
+
+// For development only, to use Meiosis-Tracer in Chrome DevTools
+import meiosisTracer from "meiosis-tracer";
+meiosisTracer({ streams: [ models ]});
+
+models.map(model => {
+  const url = model.url;
+  if (url && document.location.hash !== url) {
+    window.history.pushState({}, "", url);
+  }
+});
+models.map(() => { m.redraw(); });
+
