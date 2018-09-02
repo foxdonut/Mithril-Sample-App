@@ -10,8 +10,6 @@ const createEntryForm = (navigator, update) => {
   const setText = field => evt => update({ entryForm: O({[field]: evt.target.value}) });
   const setCFP = value => evt => update({ entryForm: O({CFP: value}) });
   const entryFormHandler = newEntry => {
-    console.log(newEntry);
-
     newEntry["favorite"] = false;
     newEntry["CFPCompleted"] = newEntry.CFP ? false : "null";
 
