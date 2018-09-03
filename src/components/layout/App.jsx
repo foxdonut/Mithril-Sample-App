@@ -20,13 +20,13 @@ const createConferenceView = (navigator, update) => {
   const ConferenceCard = createConferenceCard(update);
   return {
     view: ({attrs:{model}}) => [
-	    <StageBanner action={() => console.log(`Logging out!`)} title="Conferences" />,
-	    <CardContainer>
-		    {
-			    model.conferences
-				    .map((conference, idx) => <ConferenceCard conference={conference} idx={idx} />)
-		    }
-	    </CardContainer>
+      <StageBanner action={() => console.log(`Logging out!`)} title="Conferences" />,
+      <CardContainer>
+        {
+          model.conferences
+            .map((conference, idx) => <ConferenceCard conference={conference} idx={idx} />)
+        }
+      </CardContainer>
     ]
   };
 };
@@ -35,14 +35,14 @@ const createCFPView = (navigator, update) => {
   const CFPCard = createCFPCard(update);
   return {
     view: ({attrs:{model}}) => [
-	    <StageBanner action={() => console.log(`Logging out!`)} title="Call for Papers" />,
-	    <CardContainer>
-		    {
-			    model.conferences
-				    .map((conference, idx) => conference.CFP && <CFPCard cfp={true} conference={conference} idx={idx} />)
+      <StageBanner action={() => console.log(`Logging out!`)} title="Call for Papers" />,
+      <CardContainer>
+        {
+          model.conferences
+            .map((conference, idx) => conference.CFP && <CFPCard cfp={true} conference={conference} idx={idx} />)
             .filter(x => x)
-		    }
-	    </CardContainer>
+        }
+      </CardContainer>
     ]
   };
 };
@@ -51,10 +51,10 @@ const createFormView = (navigator, update) => {
   const EntryForm = createEntryForm(navigator, update);
   return {
     view: ({attrs:{model}}) => [
-	    <StageBanner action={() => console.log(`Logging out!`)} title="Add Conference" />,
-	    <CardContainer>
-		    <EntryForm model={model} />
-	    </CardContainer>
+      <StageBanner action={() => console.log(`Logging out!`)} title="Add Conference" />,
+      <CardContainer>
+        <EntryForm model={model} />
+      </CardContainer>
     ]
   };
 };
