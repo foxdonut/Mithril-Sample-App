@@ -24,12 +24,12 @@ import { createNavigator } from "../../services/navigator"
 const createWelcomeView = (navigator, update, auth) => {
   return {
     view: () => [
-	    <h1 class="app-title">Conference Tracker</h1>,
-	    <h2 class="app-greeting">Welcome</h2>,
-	    <span class="app-description">Track conferences and CFP dates.</span>,
-	    <div class="login-button">
-		    <UIButton action={() => auth.login()} buttonName="LOGIN" />
-	    </div>
+      <h1 class="app-title">Conference Tracker</h1>,
+      <h2 class="app-greeting">Welcome</h2>,
+      <span class="app-description">Track conferences and CFP dates.</span>,
+      <div class="login-button">
+        <UIButton action={() => auth.login()} buttonName="LOGIN" />
+      </div>
     ]
   };
 };
@@ -49,13 +49,13 @@ const createConferenceView = (navigator, update, auth) => {
   const ConferenceCard = createConferenceCard(update);
   return O({
     view: ({attrs:{model}}) => [
-	    <StageBanner action={() => auth.logout()} title="Conferences" />,
-	    <CardContainer>
-		    {
-			    model.conferences
-				    .map((conference, idx) => <ConferenceCard conference={conference} idx={idx} />)
-		    }
-	    </CardContainer>
+      <StageBanner action={() => auth.logout()} title="Conferences" />,
+      <CardContainer>
+        {
+          model.conferences
+            .map((conference, idx) => <ConferenceCard conference={conference} idx={idx} />)
+        }
+      </CardContainer>
     ]
   }, requiresAuth(auth));
 };
@@ -64,14 +64,14 @@ const createCFPView = (navigator, update, auth) => {
   const CFPCard = createCFPCard(update);
   return O({
     view: ({attrs:{model}}) => [
-	    <StageBanner action={() => auth.logout()} title="Call for Papers" />,
-	    <CardContainer>
-		    {
-			    model.conferences
+      <StageBanner action={() => auth.logout()} title="Call for Papers" />,
+      <CardContainer>
+        {
+          model.conferences
             .map((conference, idx) => conference.CFP && <CFPCard cfp={true} conference={conference} idx={idx} />)
             .filter(x => x)
-		    }
-	    </CardContainer>
+        }
+      </CardContainer>
     ]
   }, requiresAuth(auth));
 };
@@ -80,10 +80,10 @@ const createFormView = (navigator, update, auth) => {
   const EntryForm = createEntryForm(navigator, update);
   return O({
     view: ({attrs:{model}}) => [
-	    <StageBanner action={() => auth.logout()} title="Add Conference" />,
-	    <CardContainer>
-		    <EntryForm model={model} />
-	    </CardContainer>
+      <StageBanner action={() => auth.logout()} title="Add Conference" />,
+      <CardContainer>
+        <EntryForm model={model} />
+      </CardContainer>
     ]
   }, requiresAuth(auth));
 };
